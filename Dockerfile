@@ -77,13 +77,10 @@ RUN set -eux \
       elif [ "${TARGETARCH}${TARGETVARIANT}" = "arm64" ]; then S6_ARCH="aarch64"; fi\
       && if [ -z "${S6_ARCH}" ]; then { echo "Error: Not able to determine arch"; exit 1; }; fi \
     && echo "Installing s6-overlay for ${S6_ARCH}" \
-      && curl --fail --silent --show-error --location --output s6-overlay-noarch.tar.xz --location \
+      && curl --fail --silent --no-progress-meter --show-error --location --remote-name-all --parallel --parallel-max 4 \
         "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz" \
-      && curl --fail --silent --show-error --location --output s6-overlay-noarch.tar.xz.sha256 \
         "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz.sha256" \
-      && curl --fail --silent --show-error --location --output s6-overlay-${S6_ARCH}.tar.xz --location \
         "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz" \
-      && curl --fail --silent --show-error --location --output s6-overlay-${S6_ARCH}.tar.xz.sha256 \
         "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz.sha256" \
       && echo "Validating s6-archive checksums" \
         && sha256sum --check ./*.sha256 \
